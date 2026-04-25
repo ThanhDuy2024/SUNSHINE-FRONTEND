@@ -1,0 +1,5 @@
+@import "tailwindcss";
+@plugin "daisyui";
+* {
+  font-family: "Be Vietnam Pro", sans-serif
+}
