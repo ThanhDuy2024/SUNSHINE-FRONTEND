@@ -38,7 +38,11 @@ export default function CategoryPage() {
         <div className="bg-white p-4 rounded-2xl shadow-lg">
           <div className="p-6">
             {/* Header */}
-            <AdminCategoryHeader />
+            <AdminCategoryHeader
+              title={"Danh sách danh mục"}
+              suptilte={"Tạo danh mục"}
+              link={"/admin/category/create"}
+            />
             {/* search and filter */}
             <AdminCategorySearchFilter
               statusCallBack={statusCallBack}

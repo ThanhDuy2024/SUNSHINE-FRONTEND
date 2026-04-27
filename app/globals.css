@@ -3,3 +3,41 @@
 * {
   font-family: "Be Vietnam Pro", sans-serif
 }
+
+.filepond-custom .filepond--root {
+  @apply rounded-2xl border-2 border-gray-300 bg-white p-5 transition shadow-sm;
+}
+
+.filepond-custom .filepond--root:hover {
+  @apply border-gray-400 shadow-md;
+}
+
+/* vùng kéo thả */
+.filepond-custom .filepond--drop-label {
+  @apply text-gray-500 text-sm;
+}
+
+/* chữ chọn ảnh */
+.filepond-custom .filepond--label-action {
+  @apply text-blue-500 font-medium;
+}
+
+/* panel */
+.filepond-custom .filepond--panel-root {
+  @apply bg-white rounded-2xl border border-gray-200;
+}
+
+/* item khi có ảnh */
+.filepond-custom .filepond--item-panel {
+  @apply bg-white border border-gray-300 rounded-xl;
+}
+
+/* file */
+.filepond-custom .filepond--file {
+  @apply shadow-sm rounded-xl border border-gray-200;
+}
+
+/* progress */
+.filepond-custom .filepond--progress-indicator {
+  @apply bg-blue-500;
+}
