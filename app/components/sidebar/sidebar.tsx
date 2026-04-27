@@ -6,12 +6,12 @@ import Link from "next/link";
 export default function SiderBarAdmin() {
   return (
     <>
-      <div className="">
+      <div className="bg-[#04535C] min-h-screen">
         <div className="p-4">
           <Image src={logo} alt="Logo" width={114} height={37} loading="eager"/>
         </div>
 
-        <div className="p-4">
+        <div className="p-4 bg-[#04535C]">
           <div className="py-2 px-4 flex items-center gap-2.5 text-white cursor-pointer bg-[#056D6E] rounded-lg mb-6">
             <div className="">
               <RxDashboard size={22} />

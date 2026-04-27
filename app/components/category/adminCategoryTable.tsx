@@ -81,7 +81,7 @@ export default function AdminCategoryTable(props: any) {
                     <div
                       className="inline-flex items-center gap-x-2 text-sm font-semibold rounded-lg hover:text-primary-hover focus:outline-hidden focus:text-primary-focus disabled:opacity-50 disabled:pointer-events-none text-center cursor-pointer gap-2.5"
                     >
-                      <Link href={"/admin/category/edit"} className="flex items-center">
+                      <Link href={`/admin/category/edit/${item.id}`} className="flex items-center">
                         <GrEdit size={22} className="hover:text-green-700" />
                       </Link>
 

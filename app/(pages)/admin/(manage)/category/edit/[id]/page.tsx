@@ -3,7 +3,7 @@
 import AdminCategoryHeader from "@/app/components/category/adminCategoryHeader";
 // FilePond core
 import { FilePond, registerPlugin } from "react-filepond";
-import { FilePondFile } from "filepond";
+import { FilePondFile, FilePondInitialFile } from "filepond";
 
 // CSS
 import "filepond/dist/filepond.min.css";
@@ -11,17 +11,44 @@ import "filepond/dist/filepond.min.css";
 // Plugin preview ảnh
 import FilePondPluginImagePreview from "filepond-plugin-image-preview";
 import "filepond-plugin-image-preview/dist/filepond-plugin-image-preview.css";
-import { useState } from "react";
-import { useRouter } from "next/navigation";
+import { useEffect, useState } from "react";
+import { useParams, useRouter } from "next/navigation";
 import { toast } from "sonner";
-import { postCategories } from "@/app/services/admins/categories/categoryService";
+import { getCategoryDetail, postCategories, updateCategory } from "@/app/services/admins/categories/categoryService";
 
 // đăng ký plugin
 registerPlugin(FilePondPluginImagePreview)
+
 export default function Page() {
-  const [files, setFiles] = useState<FilePondFile[]>([]);
+  const [files, setFiles] = useState<any[]>([]);
   const [status, setStatus] = useState('active');
+  const [category, setCategory] = useState<any | null>("");
   const route = useRouter();
+  const params = useParams<{ id: string }>();
+
+  useEffect(() => {
+    const loadCategory = async () => {
+      const res = await getCategoryDetail(params.id);
+      if (res.code === "success") {
+        console.log(res.data);
+        setCategory(res.data);
+
+        setFiles([
+          {
+            source: res.data.image,
+            options: {
+              type: "local"
+            }
+          }
+        ]);
+      } else {
+        toast.error("Không tìm thấy thông tin");
+        route.push("/admin/category/list");
+      }
+    };
+    loadCategory();
+  }, [params.id, route]);
+
   const handleSubmit = async (e: any) => {
     e.preventDefault();
     const formData = new FormData();
@@ -33,13 +60,13 @@ export default function Page() {
       formData.append("image", files[0].file);
     }
 
-    const res = await postCategories(formData);
+    const res = await updateCategory(formData, params.id);
 
     if(res.code === "success") {
-      toast.success("Tạo danh mục thành công!")
-      route.push("/admin/category/list");
+      toast.success("Cập nhật danh mục thành công!")
+      route.push("/admin/category/list")
     } else {
-      toast.error("Danh mục đã bị trùng!")
+      toast.error("Cập nhật danh mục thất bại")
     }
   }
   return (
@@ -48,7 +75,7 @@ export default function Page() {
         <div className="bg-white p-4 rounded-2xl shadow-lg">
           <div className="p-6">
             <AdminCategoryHeader
-              title={"Tạo mới danh mục"}
+              title={"Chỉnh sửa danh mục"}
               suptilte={"Quay lại danh sách"}
               link={"/admin/category/list"}
             />
@@ -64,14 +91,14 @@ export default function Page() {
                 <label htmlFor="" className="block mb-2.5 font-bold">
                   Tên danh mục:
                 </label>
-                <input type="text" name="name" placeholder="Nhập tên danh mục........" className="input w-full outline-0 rounded-lg" required />
+                <input type="text" name="name" placeholder="Nhập tên danh mục........" className="input w-full outline-0 rounded-lg" required defaultValue={category?.categoryName || ""} />
               </div>
 
               <div className="w-[49%]">
                 <label htmlFor="" className="block mb-2.5 font-bold">
                   Trạng thái:
                 </label>
-                <select defaultValue="active" className="select w-full rounded-lg outline-0"
+                <select defaultValue={category?.status} className="select w-full rounded-lg outline-0"
                   onChange={(e) => setStatus(e.target.value)}
                 >
                   <option disabled={true}>Trạng thái</option>
@@ -83,12 +110,25 @@ export default function Page() {
 
             <div className="mt-10 cursor-pointer">
               <FilePond
+                files={files}
                 onupdatefiles={setFiles}
                 allowMultiple={false}
                 maxFiles={1}
                 name="file"
                 labelIdle={`Chọn ảnh danh mục`}
                 className="filepond-custom mt-10 cursor-pointer w-[50%]"
+                server={{
+                  load: (source, load, error, progress, abort) => {
+                    fetch(source)
+                      .then((res) => res.blob())
+                      .then((blob) => load(blob))
+                      .catch(() => error("Không tải được ảnh"));
+
+                    return {
+                      abort: () => abort(),
+                    };
+                  },
+                }}
               />
             </div>
 
