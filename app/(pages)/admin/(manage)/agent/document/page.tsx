@@ -1,30 +1,39 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 'use client'
-import AdminCategoryTable from "../../../../../components/category/adminCategoryTable"
 import AdminCategoryHeader from "../../../../../components/category/adminCategoryHeader"
 import AdminCategorySearchFilter from "../../../../../components/category/adminCategorySearchFilter"
-import { getAllCategory } from "../../../../../services/admins/categories/categoryService";
 import Pagination from "../../../../../components/pagination/pagination"
 import { useEffect, useState } from "react"
-import { useRouter } from "next/navigation"
+import { useRouter } from "next/navigation";
+import { getAgentDocument } from "@/app/services/admins/agent/agentService";
+import AdminAgentDocumentTable from "@/app/components/agent/adminAgentDocument"
 
-export default function CategoryPage() {
-  const [data, setData] = useState(null);
+export default function Page() {
+  const [data, setData] = useState<any>(null);
   const [status, setStatus] = useState('');
   const [search, setSearch] = useState(null);
   const [page, setPage] = useState(1);
+  const [check, setCheck] = useState<any>({});
   const router = useRouter()
-  const statusCallBack = (value) => {
+  const statusCallBack = (value: any) => {
     setStatus(value);
     setPage(1)
   }
 
-  const searchCallBack = (value) => {
+  const searchCallBack = (value: any) => {
     setSearch(value);
     setPage(1)
   }
+
+  const checkStatus = (data: any) => {
+    setCheck((prev: any) => ({
+      ...prev,
+      ...data,
+    }));
+  }
   useEffect(() => {
     const loadCategory = async () => {
-      const category = await getAllCategory(status, search, page);
+      const category = await getAgentDocument(search);
       if (category.code === "error") {
         router.push("/admin/login")
       } else {
@@ -33,7 +42,7 @@ export default function CategoryPage() {
     };
 
     loadCategory();
-  }, [status, search, page]);
+  }, [status, search, page, router, check]);
   return (
     <>
       <div className="p-4">
@@ -41,9 +50,9 @@ export default function CategoryPage() {
           <div className="p-6">
             {/* Header */}
             <AdminCategoryHeader
-              title={"Danh sách danh mục"}
-              suptilte={"Tạo danh mục"}
-              link={"/admin/category/create"}
+              title={"Đơn đăng ký đại lý"}
+              suptilte={"Quay lại tranh danh sách đại lý"}
+              link={"/admin/agent/list"}
             />
             {/* search and filter */}
             <AdminCategorySearchFilter
@@ -51,7 +60,9 @@ export default function CategoryPage() {
               searchCallBack={searchCallBack}
             />
           </div>
-          <AdminCategoryTable categories={data?.data || null} />
+          <AdminAgentDocumentTable
+            categories={data?.data || null}
+            checkStatus={checkStatus} />
           <Pagination
             currentPage={page}
             totalPages={data?.totalPage || 1}

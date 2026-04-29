@@ -3,8 +3,6 @@
 import AdminCategoryHeader from "@/app/components/category/adminCategoryHeader";
 // FilePond core
 import { FilePond, registerPlugin } from "react-filepond";
-import { FilePondFile, FilePondInitialFile } from "filepond";
-
 // CSS
 import "filepond/dist/filepond.min.css";
 
@@ -14,7 +12,7 @@ import "filepond-plugin-image-preview/dist/filepond-plugin-image-preview.css";
 import { useEffect, useState } from "react";
 import { useParams, useRouter } from "next/navigation";
 import { toast } from "sonner";
-import { getCategoryDetail, postCategories, updateCategory } from "@/app/services/admins/categories/categoryService";
+import { getCategoryDetail, updateCategory } from "@/app/services/admins/categories/categoryService";
 
 // đăng ký plugin
 registerPlugin(FilePondPluginImagePreview)

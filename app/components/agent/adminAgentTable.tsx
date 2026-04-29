@@ -2,11 +2,40 @@
 /* eslint-disable @next/next/no-img-element */
 /* eslint-disable @typescript-eslint/no-explicit-any */
 import Link from "next/link";
-import { GrEdit } from "react-icons/gr";
-import { PiRecycleLight } from "react-icons/pi";
+import { FaExchangeAlt } from "react-icons/fa";
+import { FaRegEye } from "react-icons/fa";
 import noImage from "../../assets/imgs/noImage.png"
-export default function AdminCategoryTable(props: any) {
-  const { categories } = props;
+import { acceptOrDenyAgent } from "@/app/services/admins/agent/agentService";
+import { toast } from "sonner";
+export default function AdminAgentTable(props: any) {
+  const { categories, checkStatus } = props;
+
+  const handleStatusChange = async (
+    currentStatus: string,
+    id: any
+  ) => {
+    const newStatus =
+      currentStatus === "active"
+        ? "inactive"
+        : "active";
+
+    const data = {
+      agentId: id,
+      status: newStatus,
+    };
+
+    const res = await acceptOrDenyAgent(data);
+
+    if (res.code === "success") {
+      toast.success("Đã thay đổi trạng thái của đại lý");
+      await checkStatus({
+        id: id,
+        status: newStatus
+      });
+    } else {
+      toast.error("Thay đổi trạng thái thất bại");
+    }
+  };
   return (
     <>
       <div className="min-w-full">
@@ -18,16 +47,19 @@ export default function AdminCategoryTable(props: any) {
                   ID
                 </th>
                 <th scope="col" className="px-6 py-3 text-center text-xs font-bold text-muted-foreground-1 uppercase">
-                  Tên danh mục
+                  Tên đại lý
                 </th>
                 <th scope="col" className="px-6 py-3 text-center text-xs font-bold text-muted-foreground-1 uppercase">
                   Hình ảnh
                 </th>
                 <th scope="col" className="px-6 py-3 text-center text-xs font-bold text-muted-foreground-1 uppercase">
+                  Doanh thu
+                </th>
+                <th scope="col" className="px-6 py-3 text-center text-xs font-bold text-muted-foreground-1 uppercase">
                   Trạng thái
                 </th>
                 <th scope="col" className="px-6 py-3 text-center text-xs font-bold text-muted-foreground-1 uppercase">
-                  Người tạo
+                  Email tạo đại lý
                 </th>
                 <th scope="col" className="px-6 py-3 text-center text-xs font-bold text-muted-foreground-1 uppercase">
                   Cập nhật lần cuối
@@ -45,7 +77,7 @@ export default function AdminCategoryTable(props: any) {
                     {item.id}
                   </td>
                   <td className="px-6 py-4 whitespace-nowrap text-sm text-foreground text-center">
-                    {item.categoryName}
+                    {item.agentName}
                   </td>
                   <td className="px-6 py-4 whitespace-nowrap text-sm text-foreground text-center">
                     {item.image ? (
@@ -62,6 +94,9 @@ export default function AdminCategoryTable(props: any) {
                       </div>
                     )}
                   </td>
+                  <td className="px-6 py-4 whitespace-nowrap text-center text-sm font-medium">
+                    {item.earnPrice}
+                  </td>
                   {item.status === "active" ? (
                     <td className="px-6 py-4 whitespace-nowrap text-center text-sm font-medium text-green-600">
                       Đang Hoạt Động
@@ -72,7 +107,7 @@ export default function AdminCategoryTable(props: any) {
                     </td>
                   )}
                   <td className="px-6 py-4 whitespace-nowrap text-center text-sm font-medium">
-                    {item.createdByAdmin.fullName}
+                    {item.user.email}
                   </td>
                   <td className="px-6 py-4 whitespace-nowrap text-center text-sm font-medium text-orange-700">
                     {item.updatedAtFormat}
@@ -81,12 +116,12 @@ export default function AdminCategoryTable(props: any) {
                     <div
                       className="inline-flex items-center gap-x-2 text-sm font-semibold rounded-lg hover:text-primary-hover focus:outline-hidden focus:text-primary-focus disabled:opacity-50 disabled:pointer-events-none text-center cursor-pointer gap-2.5"
                     >
-                      <Link href={`/admin/category/edit/${item.id}`} className="flex items-center">
-                        <GrEdit size={22} className="hover:text-green-700" />
+                      <Link href={`/admin/agent/detail/${item.id}`} className="flex items-center p-1.5 bg-blue-500 hover:bg-blue-600 rounded-lg">
+                        <FaRegEye size={22} className="text-white" />
                       </Link>
 
-                      <div className="flex items-center">
-                        <PiRecycleLight size={22} className="hover:text-green-700" />
+                      <div className="flex items-center p-1.5 bg-orange-500 hover:bg-orange-600 rounded-lg" onClick={() => handleStatusChange(item.status, item.id)}>
+                        <FaExchangeAlt size={22} className="text-white" />
                       </div>
                     </div>
                   </td>
