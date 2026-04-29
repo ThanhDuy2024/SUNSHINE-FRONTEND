@@ -35,7 +35,7 @@ export default function Page() {
   };
   useEffect(() => {
     const loadCategory = async () => {
-      const category = await getAllAgent(search);
+      const category = await getAllAgent(search, status, page);
       if (category.code === "error") {
         router.push("/admin/login")
       } else {

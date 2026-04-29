@@ -1,6 +1,6 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
-export const getAllAgent = async (search: any) => {
-  const res = await fetch(`http://localhost:4000/api/admin/agent/list?status=&search=${search}`, {
+export const getAllAgent = async (search: any, status: any, page: any) => {
+  const res = await fetch(`http://localhost:4000/api/admin/agent/list?search=${search}&status=${status}&page=${page}&limit=10`, {
     method: "GET",
     credentials: "include"
   });
@@ -10,8 +10,8 @@ export const getAllAgent = async (search: any) => {
   return data;
 }
 
-export const getAgentDocument = async (search: any) => {
-  const res = await fetch(`http://localhost:4000/api/admin/agent/list?status=notAc&search=${search}`, {
+export const getAgentDocument = async (search: any, page: any) => {
+  const res = await fetch(`http://localhost:4000/api/admin/agent/list?status=notAc&search=${search}&page=${page}&limit=10`, {
     method: "GET",
     credentials: "include"
   });
