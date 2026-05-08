@@ -96,7 +96,7 @@ export default function Page() {
                 <label htmlFor="" className="block mb-2.5 font-bold">
                   Trạng thái:
                 </label>
-                <select defaultValue={category?.status} className="select w-full rounded-lg outline-0"
+                <select value={category?.status} className="select w-full rounded-lg outline-0"
                   onChange={(e) => setStatus(e.target.value)}
                 >
                   <option disabled={true}>Trạng thái</option>
